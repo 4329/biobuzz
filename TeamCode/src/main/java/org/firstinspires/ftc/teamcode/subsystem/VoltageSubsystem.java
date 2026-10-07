@@ -4,11 +4,10 @@ import static org.firstinspires.ftc.teamcode.util.RobotConfig.EXPECTED_BATTERY_V
 
 import android.util.Log;
 
-import com.seattlesolvers.solverslib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.seattlesolvers.solverslib.command.SubsystemBase;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class VoltageSubsystem extends SubsystemBase {

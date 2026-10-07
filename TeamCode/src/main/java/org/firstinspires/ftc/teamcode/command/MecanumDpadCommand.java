@@ -10,42 +10,42 @@ import org.firstinspires.ftc.teamcode.subsystem.MecanumDriveSubsystem;
 import java.util.function.BooleanSupplier;
 
 public class MecanumDpadCommand extends CommandBase {
-    private MecanumDriveSubsystem mecanumDriveSubsystem;
-    private BooleanSupplier speedBooost;
-    private final int forward;
-    private final int strafe;
-    private Telemetry telemetry;
+  private MecanumDriveSubsystem mecanumDriveSubsystem;
+  private BooleanSupplier speedBooost;
+  private final int forward;
+  private final int strafe;
+  private Telemetry telemetry;
 
-    public MecanumDpadCommand(MecanumDriveSubsystem mecanumDriveSubsystem, BooleanSupplier speedBooost,
-                              int strafe, int forward, Telemetry telemetry) {
-        this.mecanumDriveSubsystem = mecanumDriveSubsystem;
-        this.speedBooost = speedBooost;
-        this.forward = forward;
-        this.strafe = strafe;
-        this.telemetry = telemetry;
-        addRequirements(mecanumDriveSubsystem);
-    }
+  public MecanumDpadCommand(MecanumDriveSubsystem mecanumDriveSubsystem, BooleanSupplier speedBooost,
+                            int strafe, int forward, Telemetry telemetry) {
+    this.mecanumDriveSubsystem = mecanumDriveSubsystem;
+    this.speedBooost = speedBooost;
+    this.forward = forward;
+    this.strafe = strafe;
+    this.telemetry = telemetry;
+    addRequirements(mecanumDriveSubsystem);
+  }
 
-    @Override
-    public void end(boolean interrupted) {
-        mecanumDriveSubsystem.stop();
-    }
+  @Override
+  public void end(boolean interrupted) {
+    mecanumDriveSubsystem.stop();
+  }
 
-    @Override
-    public void execute() {
-        telemetry.addData("speedBooost", speedBooost.getAsBoolean());
-        if (speedBooost.getAsBoolean()) {
-            if (Math.abs(forward) > 0) {
-                mecanumDriveSubsystem.drive( 0,  forward, 0);
-            } else {
-                mecanumDriveSubsystem.drive( strafe, 0, 0);
-            }
-        } else {
-            if (Math.abs(forward) > 0) {
-                mecanumDriveSubsystem.drive(0, forward / REGULAR_DRIVE_DIVISOR, 0);
-            } else {
-                mecanumDriveSubsystem.drive( strafe / REGULAR_DRIVE_DIVISOR, 0, 0);
-            }
-        }
+  @Override
+  public void execute() {
+    telemetry.addData("speedBooost", speedBooost.getAsBoolean());
+    if (speedBooost.getAsBoolean()) {
+      if (Math.abs(forward) > 0) {
+        mecanumDriveSubsystem.drive(0, forward, 0);
+      } else {
+        mecanumDriveSubsystem.drive(strafe, 0, 0);
+      }
+    } else {
+      if (Math.abs(forward) > 0) {
+        mecanumDriveSubsystem.drive(0, forward / REGULAR_DRIVE_DIVISOR, 0);
+      } else {
+        mecanumDriveSubsystem.drive(strafe / REGULAR_DRIVE_DIVISOR, 0, 0);
+      }
     }
+  }
 }

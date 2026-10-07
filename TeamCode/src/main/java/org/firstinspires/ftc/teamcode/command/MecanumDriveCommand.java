@@ -11,56 +11,54 @@ import org.firstinspires.ftc.teamcode.subsystem.MecanumDriveSubsystem;
 import java.util.function.Supplier;
 
 public class MecanumDriveCommand extends CommandBase {
-    private MecanumDriveSubsystem mecanumDriveSubsystem;
-    private Supplier<Double> forwardDrive;
-    private Supplier<Double> strafeDrive;
-    private Supplier<Double> turnDrive;
-    private Supplier<Boolean> speedBoost;
-    private Supplier<Boolean> slowMode;
-    private final Telemetry telemetry;
+  private MecanumDriveSubsystem mecanumDriveSubsystem;
+  private Supplier<Double> forwardDrive;
+  private Supplier<Double> strafeDrive;
+  private Supplier<Double> turnDrive;
+  private Supplier<Boolean> speedBoost;
+  private Supplier<Boolean> slowMode;
+  private final Telemetry telemetry;
 
-    public MecanumDriveCommand(MecanumDriveSubsystem mecanumDriveSubsystem, Supplier<Double> strafeDrive, Supplier<Double> forwardDrive, Supplier<Double> turnDrive, Supplier<Boolean> speedBoost, Supplier<Boolean> slowMode, Telemetry telemetry) {
-        this.mecanumDriveSubsystem = mecanumDriveSubsystem;
-        this.strafeDrive = strafeDrive;
-        this.forwardDrive = forwardDrive;
-        this.turnDrive = turnDrive;
-        this.speedBoost = speedBoost;
-        this.slowMode = slowMode;
-        this.telemetry = telemetry;
-        addRequirements(mecanumDriveSubsystem);
+  public MecanumDriveCommand(MecanumDriveSubsystem mecanumDriveSubsystem, Supplier<Double> strafeDrive, Supplier<Double> forwardDrive, Supplier<Double> turnDrive, Supplier<Boolean> speedBoost, Supplier<Boolean> slowMode, Telemetry telemetry) {
+    this.mecanumDriveSubsystem = mecanumDriveSubsystem;
+    this.strafeDrive = strafeDrive;
+    this.forwardDrive = forwardDrive;
+    this.turnDrive = turnDrive;
+    this.speedBoost = speedBoost;
+    this.slowMode = slowMode;
+    this.telemetry = telemetry;
+    addRequirements(mecanumDriveSubsystem);
+  }
+
+  @Override
+  public void execute() {
+    double strafe, forward, turn;
+
+    if (speedBoost.get()) {
+      strafe = strafeDrive.get();
+      forward = forwardDrive.get();
+      turn = turnDrive.get();
+    } else if (slowMode.get()) {
+      strafe = strafeDrive.get() / SLOW_DRIVE_DIVISOR;
+      forward = forwardDrive.get() / SLOW_DRIVE_DIVISOR;
+      turn = turnDrive.get() / SLOW_DRIVE_DIVISOR;
+
+    } else {
+      strafe = strafeDrive.get() / REGULAR_DRIVE_DIVISOR;
+      forward = forwardDrive.get() / REGULAR_DRIVE_DIVISOR;
+      turn = turnDrive.get() / REGULAR_DRIVE_DIVISOR;
     }
 
-    @Override
-    public void execute() {
-        double strafe, forward, turn;
-
-        if (speedBoost.get()) {
-                    strafe = strafeDrive.get();
-                    forward = forwardDrive.get();
-                    turn = turnDrive.get();
-        }
-        else if(slowMode.get()) {
-                    strafe = strafeDrive.get() / SLOW_DRIVE_DIVISOR;
-                    forward = forwardDrive.get() / SLOW_DRIVE_DIVISOR;
-                    turn = turnDrive.get() / SLOW_DRIVE_DIVISOR;
-
-        }
-        else {
-                    strafe =strafeDrive.get() / REGULAR_DRIVE_DIVISOR;
-                    forward = forwardDrive.get() / REGULAR_DRIVE_DIVISOR;
-                    turn = turnDrive.get() / REGULAR_DRIVE_DIVISOR;
-        }
-
+    mecanumDriveSubsystem.drive(strafe, forward, turn);
+    /*
+    if we want to do field oriented... check this out:
+    if (robotState.isRobotOriented()) {
         mecanumDriveSubsystem.drive (strafe, forward, turn);
-        /*
-        if we want to do field oriented... check this out:
-        if (robotState.isRobotOriented()) {
-            mecanumDriveSubsystem.drive (strafe, forward, turn);
-        }
-        else {
-            mecanumDriveSubsystem.driveFieldOriented(strafe, forward, turn, imuSubsystem.getHeading());
-        }
-        telemetry.addData("Drive Mode is ", robotState.isRobotOriented()? "robot oriented": "field oriented");
-         */
     }
+    else {
+        mecanumDriveSubsystem.driveFieldOriented(strafe, forward, turn, imuSubsystem.getHeading());
+    }
+    telemetry.addData("Drive Mode is ", robotState.isRobotOriented()? "robot oriented": "field oriented");
+     */
+  }
 }
