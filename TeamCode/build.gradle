@@ -19,11 +19,26 @@ apply from: '../build.dependencies.gradle'
 android {
     namespace = 'org.firstinspires.ftc.teamcode'
 
+    compileSdk 35
+    defaultConfig {
+        minSdk 24
+    }
+
     packagingOptions {
         jniLibs.useLegacyPackaging true
     }
 }
 
+repositories {
+    maven {
+        url "https://repo.dairy.foundation/releases"
+    }
+}
+
 dependencies {
     implementation project(':FtcRobotController')
+    implementation "org.solverslib:core:0.3.6" // core
+    implementation "org.solverslib:pedroPathing:0.3.6" // pedroPathing
+    implementation "org.psilynx.psikit:core:0.2.0" // psikit
+    implementation "org.psilynx.psikit:ftc:0.2.0" // psikit - ftc
 }
