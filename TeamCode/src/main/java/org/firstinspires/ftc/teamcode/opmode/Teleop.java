@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.opmode;
 
 import com.bylazar.telemetry.JoinedTelemetry;
 import com.bylazar.telemetry.PanelsTelemetry;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
@@ -14,8 +15,8 @@ import org.firstinspires.ftc.teamcode.subsystem.MecanumDriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.TelemetryUpdateSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.VoltageSubsystem;
 import org.firstinspires.ftc.teamcode.util.Alliance;
-
-public abstract class Teleop extends CommandOpMode {
+@TeleOp(name="teleop")
+public class Teleop extends CommandOpMode {
   // FtcDashboard dashboard = FtcDashboard.getInstance();
 
   private GamepadEx driver, operator;
@@ -35,9 +36,9 @@ public abstract class Teleop extends CommandOpMode {
     operator = new GamepadEx(gamepad2);
     mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap);
     telemetryUpdateSubsystem = new TelemetryUpdateSubsystem(telemetry);
-    imuSubsystem = new ImuSubsystem(hardwareMap, telemetry);
+    /*imuSubsystem = new ImuSubsystem(hardwareMap, telemetry);*/
     voltageSubsystem = new VoltageSubsystem(hardwareMap);
-    autoCommandFactory = new AutoCommandFactory(mecanumDriveSubsystem, imuSubsystem, telemetry, getAlliance(), voltageSubsystem);
+//    autoCommandFactory = new AutoCommandFactory(mecanumDriveSubsystem, imuSubsystem, telemetry, getAlliance(), voltageSubsystem);
 
     MecanumDriveCommand mecanumDriveCommand = new MecanumDriveCommand(
         mecanumDriveSubsystem,
@@ -57,5 +58,5 @@ public abstract class Teleop extends CommandOpMode {
     register(telemetryUpdateSubsystem, voltageSubsystem);
   }
 
-  public abstract Alliance getAlliance();
+//  public abstract Alliance getAlliance();
 }
