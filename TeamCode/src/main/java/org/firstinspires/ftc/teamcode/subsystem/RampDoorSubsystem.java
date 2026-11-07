@@ -12,7 +12,7 @@ public class RampDoorSubsystem extends SubsystemBase {
     private Servo kingBobvexethe5thsShooterDoor;
     public RampDoorSubsystem(HardwareMap hm) {
         this.kingBobvexethe5thsShooterDoor=hm.get(Servo.class,"sdoor");
-
+        closed();
     }
     public void open (){
         kingBobvexethe5thsShooterDoor.setPosition(DOOROPEN);
