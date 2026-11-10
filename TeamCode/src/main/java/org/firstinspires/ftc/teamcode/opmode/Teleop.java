@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
-import com.bylazar.telemetry.JoinedTelemetry;
-import com.bylazar.telemetry.PanelsTelemetry;
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
@@ -17,8 +17,8 @@ import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.MecanumDriveSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.TelemetryUpdateSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.VoltageSubsystem;
-import org.firstinspires.ftc.teamcode.util.Alliance;
-@TeleOp(name="teleop")
+
+@TeleOp(name = "teleop")
 public class Teleop extends CommandOpMode {
   // FtcDashboard dashboard = FtcDashboard.getInstance();
 
@@ -33,7 +33,7 @@ public class Teleop extends CommandOpMode {
 
   @Override
   public void initialize() {
-    telemetry = new JoinedTelemetry(telemetry, PanelsTelemetry.INSTANCE.getFtcTelemetry());
+    telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 //        LoggingUtil.enableCommandLogging();
 
     driver = new GamepadEx(gamepad1);
