@@ -23,7 +23,7 @@ public class RampDoorTest extends CommandOpMode {
   @Override
   public void initialize() {
     telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-    rampDoorSubsystem = new RampDoorSubsystem(hardwareMap);
+    rampDoorSubsystem = new RampDoorSubsystem(hardwareMap,telemetry);
     telemetryUpdateSubsystem = new TelemetryUpdateSubsystem(telemetry);
     rampDoorOpenCommand = new RampDoorOpenCommand(rampDoorSubsystem, telemetry);
     rampDoorClosedCommand = new RampDoorCloseCommand(rampDoorSubsystem, telemetry);

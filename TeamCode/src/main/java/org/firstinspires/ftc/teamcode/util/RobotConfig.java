@@ -4,7 +4,7 @@ package org.firstinspires.ftc.teamcode.util;
 import com.acmerobotics.dashboard.config.Config;
 
 @Config
-public class RobotConfig {
+public class zRobotConfig {
   public static double REGULAR_DRIVE_DIVISOR = 2.0;
   public static double SLOW_DRIVE_DIVISOR = 5.0;
 
