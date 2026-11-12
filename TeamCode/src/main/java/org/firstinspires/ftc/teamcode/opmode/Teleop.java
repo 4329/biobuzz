@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.opmode;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
@@ -23,7 +22,6 @@ import org.firstinspires.ftc.teamcode.subsystem.TelemetryUpdateSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.VoltageSubsystem;
 import org.firstinspires.ftc.teamcode.util.Alliance;
 
-@TeleOp(name = "COOLEST teleop")
 public abstract class Teleop extends CommandOpMode {
   // FtcDashboard dashboard = FtcDashboard.getInstance();
 
@@ -36,6 +34,7 @@ public abstract class Teleop extends CommandOpMode {
   private IntakeSubsystem intakeSubsystem;
   private RampDoorSubsystem rampDoorSubsystem;
   private ShooterSubsystem shooterSubsystem;
+
   @Override
   public void initialize() {
     telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -47,7 +46,7 @@ public abstract class Teleop extends CommandOpMode {
     telemetryUpdateSubsystem = new TelemetryUpdateSubsystem(telemetry);
     /*imuSubsystem = new ImuSubsystem(hardwareMap, telemetry);*/
     voltageSubsystem = new VoltageSubsystem(hardwareMap);
-   // intakeSubsystem = new IntakeSubsystem(hardwareMap);
+    intakeSubsystem = new IntakeSubsystem(hardwareMap);
 
     rampDoorSubsystem = new RampDoorSubsystem(hardwareMap, telemetry);
     shooterSubsystem = new ShooterSubsystem(hardwareMap, telemetry);
@@ -66,13 +65,13 @@ public abstract class Teleop extends CommandOpMode {
     driver.getGamepadButton(GamepadKeys.Button.DPAD_UP).whileHeld(new MecanumDpadCommand(mecanumDriveSubsystem, () -> driver.getButton(GamepadKeys.Button.B), 0, 1, telemetry));
     driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whileHeld(new MecanumDpadCommand(mecanumDriveSubsystem, () -> driver.getButton(GamepadKeys.Button.B), -1, 0, telemetry));
 
-   // mecanumDriveSubsystem.setDefaultCommand(mecanumDriveCommand);
-    //operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whileHeld(new IntakeCommand(intakeSubsystem));
-    //operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whileHeld(new OuttakeCommand(intakeSubsystem));
+    mecanumDriveSubsystem.setDefaultCommand(mecanumDriveCommand);
+    operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whileHeld(new IntakeCommand(intakeSubsystem));
+    operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whileHeld(new OuttakeCommand(intakeSubsystem));
     operator.getGamepadButton(GamepadKeys.Button.A).whenPressed(new RampDoorOpenCommand(rampDoorSubsystem, telemetry));
     operator.getGamepadButton(GamepadKeys.Button.B).whenPressed(new RampDoorCloseCommand(rampDoorSubsystem, telemetry));
     operator.getGamepadButton(GamepadKeys.Button.Y).whileHeld(autoCommandFactory.shootPollen());
-    register(telemetryUpdateSubsystem, voltageSubsystem);
+    register(telemetryUpdateSubsystem, voltageSubsystem, rampDoorSubsystem);
   }
 
   public abstract Alliance getAlliance();
