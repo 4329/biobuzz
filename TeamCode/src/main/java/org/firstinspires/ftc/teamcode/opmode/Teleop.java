@@ -1,8 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmode;
 
-import com.bylazar.telemetry.JoinedTelemetry;
-import com.bylazar.telemetry.PanelsTelemetry;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.seattlesolvers.solverslib.command.CommandOpMode;
 import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
@@ -12,14 +11,18 @@ import org.firstinspires.ftc.teamcode.command.IntakeCommand;
 import org.firstinspires.ftc.teamcode.command.MecanumDpadCommand;
 import org.firstinspires.ftc.teamcode.command.MecanumDriveCommand;
 import org.firstinspires.ftc.teamcode.command.OuttakeCommand;
+import org.firstinspires.ftc.teamcode.command.RampDoorCloseCommand;
+import org.firstinspires.ftc.teamcode.command.RampDoorOpenCommand;
 import org.firstinspires.ftc.teamcode.subsystem.ImuSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.IntakeSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.MecanumDriveSubsystem;
+import org.firstinspires.ftc.teamcode.subsystem.RampDoorSubsystem;
+import org.firstinspires.ftc.teamcode.subsystem.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.TelemetryUpdateSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.VoltageSubsystem;
 import org.firstinspires.ftc.teamcode.util.Alliance;
-@TeleOp(name="teleop")
-public class Teleop extends CommandOpMode {
+
+public abstract class Teleop extends CommandOpMode {
   // FtcDashboard dashboard = FtcDashboard.getInstance();
 
   private GamepadEx driver, operator;
@@ -29,22 +32,25 @@ public class Teleop extends CommandOpMode {
   private AutoCommandFactory autoCommandFactory;
   private VoltageSubsystem voltageSubsystem;
   private IntakeSubsystem intakeSubsystem;
-
+  private RampDoorSubsystem rampDoorSubsystem;
+  private ShooterSubsystem shooterSubsystem;
 
   @Override
   public void initialize() {
-    telemetry = new JoinedTelemetry(telemetry, PanelsTelemetry.INSTANCE.getFtcTelemetry());
+    telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 //        LoggingUtil.enableCommandLogging();
 
     driver = new GamepadEx(gamepad1);
     operator = new GamepadEx(gamepad2);
-    mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap);
+    //mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap);
     telemetryUpdateSubsystem = new TelemetryUpdateSubsystem(telemetry);
     /*imuSubsystem = new ImuSubsystem(hardwareMap, telemetry);*/
     voltageSubsystem = new VoltageSubsystem(hardwareMap);
     intakeSubsystem = new IntakeSubsystem(hardwareMap);
-//    autoCommandFactory = new AutoCommandFactory(mecanumDriveSubsystem, imuSubsystem, telemetry, getAlliance(), voltageSubsystem);
 
+    rampDoorSubsystem = new RampDoorSubsystem(hardwareMap, telemetry);
+    shooterSubsystem = new ShooterSubsystem(hardwareMap, telemetry);
+    autoCommandFactory = new AutoCommandFactory(mecanumDriveSubsystem, imuSubsystem, telemetry, getAlliance(), voltageSubsystem, shooterSubsystem, rampDoorSubsystem);
     MecanumDriveCommand mecanumDriveCommand = new MecanumDriveCommand(
         mecanumDriveSubsystem,
         () -> driver.getLeftX(),
@@ -62,8 +68,11 @@ public class Teleop extends CommandOpMode {
     mecanumDriveSubsystem.setDefaultCommand(mecanumDriveCommand);
     operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whileHeld(new IntakeCommand(intakeSubsystem));
     operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whileHeld(new OuttakeCommand(intakeSubsystem));
-    register(telemetryUpdateSubsystem, voltageSubsystem);
+    operator.getGamepadButton(GamepadKeys.Button.A).whenPressed(new RampDoorOpenCommand(rampDoorSubsystem, telemetry));
+    operator.getGamepadButton(GamepadKeys.Button.B).whenPressed(new RampDoorCloseCommand(rampDoorSubsystem, telemetry));
+    operator.getGamepadButton(GamepadKeys.Button.Y).whileHeld(autoCommandFactory.shootPollen());
+    register(telemetryUpdateSubsystem, voltageSubsystem, rampDoorSubsystem);
   }
 
-//  public abstract Alliance getAlliance();
+  public abstract Alliance getAlliance();
 }
