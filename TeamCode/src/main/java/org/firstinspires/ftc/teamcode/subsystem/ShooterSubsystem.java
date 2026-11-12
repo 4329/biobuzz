@@ -17,11 +17,18 @@ public class ShooterSubsystem extends SubsystemBase {
   private final Telemetry telemetry;
   private SimpleMotorFeedforward feedforward;
   private PIDController sPID;
-  public static Double NFEETFORWARD_S = 0.01;
-  public static Double NFEETFORWARD_V = 0.00053;
-  public static Double N_P = 0.001;
-  public static Double N_I = 0.005;
-  public static Double N_D = 0.0002;
+  public static Double NFEETFORWARD_S = 0.0;
+  public static Double NFEETFORWARD_V = 0.0;
+  public static Double N_P = 0.0;
+  public static Double N_I = 0.0;
+  public static Double N_D = 0.0;
+  /*
+    public static Double NFEETFORWARD_S = 0.01;
+    public static Double NFEETFORWARD_V = 0.00053;
+    public static Double N_P = 0.001;
+    public static Double N_I = 0.005;
+    public static Double N_D = 0.0002;
+     */
   private boolean running = false;
 
   public ShooterSubsystem(HardwareMap hm, Telemetry telemetry) {
