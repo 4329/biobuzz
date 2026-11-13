@@ -17,7 +17,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private final Telemetry telemetry;
   private SimpleMotorFeedforward feedforward;
   private PIDController sPID;
-  public static Double NFEETFORWARD_S = 0.0;
+  public static Double NFEETFORWARD_S = 0.012;
   public static Double NFEETFORWARD_V = 0.0;
   public static Double N_P = 0.0;
   public static Double N_I = 0.0;
@@ -32,7 +32,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private boolean running = false;
 
   public ShooterSubsystem(HardwareMap hm, Telemetry telemetry) {
-    FireThePollen = new MotorEx(hm, "pshoter");
+    FireThePollen = new MotorEx(hm, "pshooter");
     this.telemetry = telemetry;
     feedforward = new SimpleMotorFeedforward(NFEETFORWARD_S, NFEETFORWARD_V);
     sPID = new PIDController(N_P, N_I, N_D);
@@ -57,16 +57,19 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     if (running) {
-      double currentvelocity = FireThePollen.getCorrectedVelocity();
-      double ffoutput = feedforward.calculate(currentvelocity, FireThePollen.getAcceleration());
+      double currentvelocity = FireThePollen.getRate();
+      double ffoutput = feedforward.calculate(Math.max(currentvelocity,.01), FireThePollen.getAcceleration());
       double PIDoutput = sPID.calculate(currentvelocity);
       double clamped = MathUtil.clamp(ffoutput + PIDoutput, -1, 1);
       FireThePollen.set(clamped);
       telemetry.addData("clamped", clamped);
-      telemetry.addData("currentvelocity", currentvelocity);
+      telemetry.addData("rate", currentvelocity);
       telemetry.addData("setpoints", sPID.getSetPoint());
-
-
+      telemetry.addData("ffoutput", ffoutput);
+      telemetry.addData("running", true);
+    }
+    else {
+      telemetry.addData("running",false);
     }
   }
 }

@@ -9,6 +9,7 @@ public class ShooterCommand extends CommandBase {
 
     public ShooterCommand(ShooterSubsystem shooterSubsystem) {
         this.shooterSubsystem = shooterSubsystem;
+        addRequirements(shooterSubsystem);
     }
 
     @Override
