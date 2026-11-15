@@ -4,11 +4,10 @@ import android.content.Context;
 
 import com.qualcomm.ftccommon.FtcEventLoop;
 
-import org.firstinspires.ftc.ftccommon.external.OnCreateEventLoop;
 import org.psilynx.psikit.ftc.autolog.PsiKitAutoLogSettings;
 
 public final class PsiKitConfig {
-  @OnCreateEventLoop
+  // disable for now... @OnCreateEventLoop
   public static void configure(Context context, FtcEventLoop eventLoop) {
     PsiKitAutoLogSettings.enabledByDefault = true;
     PsiKitAutoLogSettings.enableLinearByDefault = true;

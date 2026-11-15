@@ -13,63 +13,58 @@ import org.firstinspires.ftc.teamcode.util.MathUtil;
 
 @Config
 public class ShooterSubsystem extends SubsystemBase {
-  private final MotorEx FireThePollen;
+  private final MotorEx fireThePollen;
   private final Telemetry telemetry;
-  private SimpleMotorFeedforward feedforward;
+  private SimpleMotorFeedforward feedForward;
   private PIDController sPID;
-  public static Double NFEETFORWARD_S = 0.012;
-  public static Double NFEETFORWARD_V = 0.0;
+
+  public static Double N_FEED_FORWARD_S = 0.012;
+  public static Double N_FEED_FORWARD_V = 0.0;
   public static Double N_P = 0.0;
   public static Double N_I = 0.0;
   public static Double N_D = 0.0;
-  /*
-    public static Double NFEETFORWARD_S = 0.01;
-    public static Double NFEETFORWARD_V = 0.00053;
-    public static Double N_P = 0.001;
-    public static Double N_I = 0.005;
-    public static Double N_D = 0.0002;
-     */
+  public static Double SETPOINT = 2000.0;
+
   private boolean running = false;
 
   public ShooterSubsystem(HardwareMap hm, Telemetry telemetry) {
-    FireThePollen = new MotorEx(hm, "pshooter");
+    fireThePollen = new MotorEx(hm, "pshooter");
     this.telemetry = telemetry;
-    feedforward = new SimpleMotorFeedforward(NFEETFORWARD_S, NFEETFORWARD_V);
+    feedForward = new SimpleMotorFeedforward(N_FEED_FORWARD_S, N_FEED_FORWARD_V);
     sPID = new PIDController(N_P, N_I, N_D);
-    FireThePollen.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
-    FireThePollen.setRunMode(Motor.RunMode.RawPower);
+    sPID.setSetPoint(SETPOINT);
 
-
+    fireThePollen.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+    fireThePollen.setRunMode(Motor.RunMode.RawPower);
   }
 
   public void stop() {
-    FireThePollen.stopMotor();
     running = false;
+    fireThePollen.stopMotor();
   }
 
   public void shoot() {
     running = true;
     sPID.setPID(N_P, N_I, N_D);
-    sPID.setSetPoint(1000);
-    feedforward = new SimpleMotorFeedforward(NFEETFORWARD_S, NFEETFORWARD_V);
+    sPID.setSetPoint(SETPOINT);
+    feedForward = new SimpleMotorFeedforward(N_FEED_FORWARD_S, N_FEED_FORWARD_V);
   }
 
   @Override
   public void periodic() {
     if (running) {
-      double currentvelocity = FireThePollen.getRate();
-      double ffoutput = feedforward.calculate(Math.max(currentvelocity,.01), FireThePollen.getAcceleration());
+      double currentvelocity = fireThePollen.getCorrectedVelocity();
+      double ffoutput = feedForward.calculate(Math.max(currentvelocity, 0.01), fireThePollen.getAcceleration());
       double PIDoutput = sPID.calculate(currentvelocity);
       double clamped = MathUtil.clamp(ffoutput + PIDoutput, -1, 1);
-      FireThePollen.set(clamped);
+      fireThePollen.set(clamped);
       telemetry.addData("clamped", clamped);
-      telemetry.addData("rate", currentvelocity);
+      telemetry.addData("velocity", currentvelocity);
       telemetry.addData("setpoints", sPID.getSetPoint());
       telemetry.addData("ffoutput", ffoutput);
       telemetry.addData("running", true);
-    }
-    else {
-      telemetry.addData("running",false);
+    } else {
+      telemetry.addData("running", false);
     }
   }
 }
