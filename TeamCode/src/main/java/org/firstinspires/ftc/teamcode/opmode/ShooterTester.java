@@ -30,15 +30,4 @@ public class ShooterTester extends CommandOpMode {
     operator.getGamepadButton(GamepadKeys.Button.A).whileHeld(shooterCommand);
     register(telemetryUpdateSubsystem);
   }
-
-  /*
-  @Override
-  public void run() {
-    for (LynxModule hub : hardwareMap.getAll(LynxModule.class)) {
-      hub.clearBulkCache();
-    }
-    super.run();
-  }
-   */
-
 }
