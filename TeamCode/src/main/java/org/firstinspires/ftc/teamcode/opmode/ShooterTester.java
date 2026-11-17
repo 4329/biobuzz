@@ -8,8 +8,10 @@ import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.command.ShooterCommand;
+import org.firstinspires.ftc.teamcode.subsystem.BulkCacheSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.TelemetryUpdateSubsystem;
+import org.psilynx.psikit.core.Logger;
 
 @Utility(name = "ST teste")
 public class ShooterTester extends CommandOpMode {
@@ -28,6 +30,29 @@ public class ShooterTester extends CommandOpMode {
 
     operator = new GamepadEx(gamepad2);
     operator.getGamepadButton(GamepadKeys.Button.A).whileHeld(shooterCommand);
-    register(telemetryUpdateSubsystem);
+
+    Logger.start();
+
+
+    register(new BulkCacheSubsystem(hardwareMap), telemetryUpdateSubsystem);
+  }
+
+  @Override
+  public void run() {
+    long beforeStart = System.nanoTime() / 1000L;
+    Logger.periodicBeforeUser();
+    long periodicBeforeLength = (System.nanoTime() / 1000L) - beforeStart;
+
+    long userStart = System.nanoTime() / 1000L;
+    super.run();
+    long userCodeLength = (System.nanoTime() / 1000L) - userStart;
+
+    Logger.periodicAfterUser(userCodeLength, periodicBeforeLength);
+  }
+
+  @Override
+  public void end() {
+    super.end();
+    Logger.end();
   }
 }
