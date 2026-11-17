@@ -18,8 +18,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private SimpleMotorFeedforward feedForward;
   private PIDController sPID;
 
-  public static Double N_FEED_FORWARD_S = 0.012;
-  public static Double N_FEED_FORWARD_V = 0.0;
+  public static Double N_FEET_FORWARD_S = 0.012;
+  public static Double N_FEET_FORWARD_V = 0.0;
   public static Double N_P = 0.0;
   public static Double N_I = 0.0;
   public static Double N_D = 0.0;
@@ -30,7 +30,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public ShooterSubsystem(HardwareMap hm, Telemetry telemetry) {
     fireThePollen = new MotorEx(hm, "pshooter");
     this.telemetry = telemetry;
-    feedForward = new SimpleMotorFeedforward(N_FEED_FORWARD_S, N_FEED_FORWARD_V);
+    feedForward = new SimpleMotorFeedforward(N_FEET_FORWARD_S, N_FEET_FORWARD_V);
     sPID = new PIDController(N_P, N_I, N_D);
     sPID.setSetPoint(SETPOINT);
 
@@ -47,24 +47,30 @@ public class ShooterSubsystem extends SubsystemBase {
     running = true;
     sPID.setPID(N_P, N_I, N_D);
     sPID.setSetPoint(SETPOINT);
-    feedForward = new SimpleMotorFeedforward(N_FEED_FORWARD_S, N_FEED_FORWARD_V);
+    feedForward = new SimpleMotorFeedforward(N_FEET_FORWARD_S, N_FEET_FORWARD_V);
   }
 
   @Override
   public void periodic() {
     if (running) {
-      double currentvelocity = fireThePollen.getCorrectedVelocity();
-      double ffoutput = feedForward.calculate(Math.max(currentvelocity, 0.01), fireThePollen.getAcceleration());
-      double PIDoutput = sPID.calculate(currentvelocity);
-      double clamped = MathUtil.clamp(ffoutput + PIDoutput, -1, 1);
+      double currentVelocity = fireThePollen.getCorrectedVelocity();
+      double ffOutput = feedForward.calculate(Math.max(currentVelocity, 0.01), fireThePollen.getAcceleration());
+      double pidOutput = sPID.calculate(currentVelocity);
+      double clamped = MathUtil.clamp(ffOutput + pidOutput, -1, 1);
+
       fireThePollen.set(clamped);
+
       telemetry.addData("clamped", clamped);
-      telemetry.addData("velocity", currentvelocity);
+      telemetry.addData("velocity", currentVelocity);
       telemetry.addData("setpoints", sPID.getSetPoint());
-      telemetry.addData("ffoutput", ffoutput);
+      telemetry.addData("ffoutput", ffOutput);
       telemetry.addData("running", true);
     } else {
       telemetry.addData("running", false);
+      telemetry.addData("clamped", 0);
+      telemetry.addData("velocity", 0);
+      telemetry.addData("setpoints", sPID.getSetPoint());
+      telemetry.addData("ffoutput", 0);
     }
   }
 }
