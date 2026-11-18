@@ -40,7 +40,7 @@ public class AutoCommandFactory {
     );
   }
 
-  private Command backUp(double inches, double heading) {
+  public Command backUp(double inches, double heading) {
     return new EncoderDriveCommand(mecanumDriveSubsystem, imuSubsystem, heading, -0.35, 0, 0, inches);
   }
 
