@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.command;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.seattlesolvers.solverslib.command.Command;
 import com.seattlesolvers.solverslib.command.ParallelDeadlineGroup;
 import com.seattlesolvers.solverslib.command.SequentialCommandGroup;
@@ -12,7 +13,7 @@ import org.firstinspires.ftc.teamcode.subsystem.RampDoorSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.VoltageSubsystem;
 import org.firstinspires.ftc.teamcode.util.Alliance;
-
+@Config
 public class AutoCommandFactory {
   private final MecanumDriveSubsystem mecanumDriveSubsystem;
   private final Telemetry telemetry;
@@ -21,7 +22,8 @@ public class AutoCommandFactory {
   private final VoltageSubsystem voltageSubsystem;
     private final ShooterSubsystem shooterSubsystem;
     private final RampDoorSubsystem rampDoorSubsystem;
-
+public static int P_LOADING_TIME = 500;
+  public static int P_SHOOTING_TIME = 300;
     public AutoCommandFactory(MecanumDriveSubsystem mecanumDriveSubsystem, ImuSubsystem imuSubsystem, Telemetry telemetry, Alliance alliance, VoltageSubsystem voltageSubsystem, ShooterSubsystem shooterSubsystem, RampDoorSubsystem rampDoorSubsystem) {
     this.mecanumDriveSubsystem = mecanumDriveSubsystem;
     this.imuSubsystem = imuSubsystem;
@@ -83,21 +85,21 @@ public class AutoCommandFactory {
       return new ParallelDeadlineGroup(
               new SequentialCommandGroup(//all under until perenthises are with this <-//
               new RampDoorOpenCommand(rampDoorSubsystem,telemetry),
-              new WaitCommand(500),
+              new WaitCommand(P_LOADING_TIME),
               new RampDoorCloseCommand(rampDoorSubsystem, telemetry),
-              new WaitCommand(300),
+              new WaitCommand(P_SHOOTING_TIME),
               new RampDoorOpenCommand(rampDoorSubsystem,telemetry),
-              new WaitCommand(500),
+              new WaitCommand(P_LOADING_TIME),
               new RampDoorCloseCommand(rampDoorSubsystem, telemetry),
-              new WaitCommand(300),
+              new WaitCommand(P_SHOOTING_TIME),
               new RampDoorOpenCommand(rampDoorSubsystem,telemetry),
-              new WaitCommand(500),
+              new WaitCommand(P_LOADING_TIME),
               new RampDoorCloseCommand(rampDoorSubsystem, telemetry),
-              new WaitCommand(300),
+              new WaitCommand(P_SHOOTING_TIME),
               new RampDoorOpenCommand(rampDoorSubsystem,telemetry),
-              new WaitCommand(500),
+              new WaitCommand(P_LOADING_TIME),
               new RampDoorCloseCommand(rampDoorSubsystem, telemetry),
-              new WaitCommand(300)
+              new WaitCommand(P_SHOOTING_TIME)
       ),
               new ShooterCommand(shooterSubsystem));
     }
