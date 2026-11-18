@@ -101,6 +101,14 @@ public class AutoCommandFactory {
       ),
               new ShooterCommand(shooterSubsystem));
     }
+    public Command shootNPark(){
+      return new SequentialCommandGroup(
+         //shootPollen(),
+              lFastMove(36, 0),
+              forward(80, 0),
+              lMove(11, 0)
+      );
+    }
 }
 
 

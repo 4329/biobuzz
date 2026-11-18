@@ -19,8 +19,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private PIDController sPID;
 
   public static Double N_FEET_FORWARD_S = 0.012;
-  public static Double N_FEET_FORWARD_V = 0.0;
-  public static Double N_P = 0.0;
+  public static Double N_FEET_FORWARD_V = 0.0003;
+  public static Double N_P = 0.001;
   public static Double N_I = 0.0;
   public static Double N_D = 0.0;
   public static Double SETPOINT = 2000.0;
