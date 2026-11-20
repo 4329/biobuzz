@@ -46,10 +46,10 @@ public class ShootNParkAuto extends CommandOpMode {
     telemetryUpdateSubsystem = new TelemetryUpdateSubsystem(telemetry);
     imuSubsystem = new ImuSubsystem(hardwareMap, telemetry);
     voltageSubsystem = new VoltageSubsystem(hardwareMap);
-    //intakeSubsystem = new IntakeSubsystem(hardwareMap);
+    intakeSubsystem = new IntakeSubsystem(hardwareMap);
 
-   // rampDoorSubsystem = new RampDoorSubsystem(hardwareMap, telemetry);
-   // shooterSubsystem = new ShooterSubsystem(hardwareMap, telemetry);
+    rampDoorSubsystem = new RampDoorSubsystem(hardwareMap, telemetry);
+    shooterSubsystem = new ShooterSubsystem(hardwareMap, telemetry);
     autoCommandFactory = new AutoCommandFactory(mecanumDriveSubsystem, imuSubsystem, telemetry, getAlliance(), voltageSubsystem, shooterSubsystem, rampDoorSubsystem);
     register(telemetryUpdateSubsystem, voltageSubsystem/*rampDoorSubsystem*/);
     Command Bob = autoCommandFactory.shootNPark();

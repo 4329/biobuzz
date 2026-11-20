@@ -26,8 +26,7 @@ public abstract class Teleop extends CommandOpMode {
   // FtcDashboard dashboard = FtcDashboard.getInstance();
 
   private GamepadEx driver, operator;
-  private MecanumDriveSubsystem mecanumDriveSubsystem;
-  private TelemetryUpdateSubsystem telemetryUpdateSubsystem;
+    private TelemetryUpdateSubsystem telemetryUpdateSubsystem;
   private ImuSubsystem imuSubsystem;
   private AutoCommandFactory autoCommandFactory;
   private VoltageSubsystem voltageSubsystem;
@@ -42,7 +41,7 @@ public abstract class Teleop extends CommandOpMode {
 
     driver = new GamepadEx(gamepad1);
     operator = new GamepadEx(gamepad2);
-    mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap);
+      MecanumDriveSubsystem mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap);
     telemetryUpdateSubsystem = new TelemetryUpdateSubsystem(telemetry);
     imuSubsystem = new ImuSubsystem(hardwareMap, telemetry);
     voltageSubsystem = new VoltageSubsystem(hardwareMap);
@@ -52,7 +51,7 @@ public abstract class Teleop extends CommandOpMode {
     shooterSubsystem = new ShooterSubsystem(hardwareMap, telemetry);
     autoCommandFactory = new AutoCommandFactory(mecanumDriveSubsystem, imuSubsystem, telemetry, getAlliance(), voltageSubsystem, shooterSubsystem, rampDoorSubsystem);
     MecanumDriveCommand mecanumDriveCommand = new MecanumDriveCommand(
-        mecanumDriveSubsystem,
+            mecanumDriveSubsystem,
         () -> driver.getLeftX(),
         () -> driver.getLeftY(),
         () -> driver.getRightX(),

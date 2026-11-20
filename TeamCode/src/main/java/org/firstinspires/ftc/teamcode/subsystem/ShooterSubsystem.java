@@ -20,10 +20,10 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public static Double N_FEET_FORWARD_S = 0.012;
   public static Double N_FEET_FORWARD_V = 0.0003;
-  public static Double N_P = 0.001;
+  public static Double N_P = 0.004;
   public static Double N_I = 0.0;
   public static Double N_D = 0.0;
-  public static Double SETPOINT = 1300.0;
+  public static Double SETPOINT = 1220.0;
 
   private boolean running = false;
 

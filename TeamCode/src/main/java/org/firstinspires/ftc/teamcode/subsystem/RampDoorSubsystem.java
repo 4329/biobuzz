@@ -9,8 +9,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @Config
 public class RampDoorSubsystem extends SubsystemBase {
-  public static Double DOOROPEN = .9;
-  public static Double DOORCLOSED = 0d;
+  public static Double DOOROPEN = .35;
+  public static Double DOORCLOSED = .1d;
   private Servo kingBobvexethe5thsShooterDoor;
   private final Telemetry telemetry;
 
