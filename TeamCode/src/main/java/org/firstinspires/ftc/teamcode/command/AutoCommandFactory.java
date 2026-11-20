@@ -105,10 +105,14 @@ public static int P_LOADING_TIME = 500;
     }
     public Command shootNPark(){
       return new SequentialCommandGroup(
-         //shootPollen(),
-              lFastMove(36, 0),
-              forward(80, 0),
-              lMove(11, 0)
+         shootPollen(),
+              forward(32,0),
+              rFastMove(83, 0),
+              forward(9, 0)
+
+
+
+
       );
     }
 }

@@ -42,9 +42,9 @@ public abstract class Teleop extends CommandOpMode {
 
     driver = new GamepadEx(gamepad1);
     operator = new GamepadEx(gamepad2);
-    //mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap);
+    mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap);
     telemetryUpdateSubsystem = new TelemetryUpdateSubsystem(telemetry);
-    /*imuSubsystem = new ImuSubsystem(hardwareMap, telemetry);*/
+    imuSubsystem = new ImuSubsystem(hardwareMap, telemetry);
     voltageSubsystem = new VoltageSubsystem(hardwareMap);
     intakeSubsystem = new IntakeSubsystem(hardwareMap);
 
