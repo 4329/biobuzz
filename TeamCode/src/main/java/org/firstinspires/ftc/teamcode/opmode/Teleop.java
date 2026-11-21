@@ -23,55 +23,55 @@ import org.firstinspires.ftc.teamcode.subsystem.VoltageSubsystem;
 import org.firstinspires.ftc.teamcode.util.Alliance;
 
 public abstract class Teleop extends CommandOpMode {
-  // FtcDashboard dashboard = FtcDashboard.getInstance();
+    // FtcDashboard dashboard = FtcDashboard.getInstance();
 
-  private GamepadEx driver, operator;
+    private GamepadEx driver, operator;
     private TelemetryUpdateSubsystem telemetryUpdateSubsystem;
-  private ImuSubsystem imuSubsystem;
-  private AutoCommandFactory autoCommandFactory;
-  private VoltageSubsystem voltageSubsystem;
-  private IntakeSubsystem intakeSubsystem;
-  private RampDoorSubsystem rampDoorSubsystem;
-  private ShooterSubsystem shooterSubsystem;
+    private ImuSubsystem imuSubsystem;
+    private AutoCommandFactory autoCommandFactory;
+    private VoltageSubsystem voltageSubsystem;
+    private IntakeSubsystem intakeSubsystem;
+    private RampDoorSubsystem rampDoorSubsystem;
+    private ShooterSubsystem shooterSubsystem;
 
-  @Override
-  public void initialize() {
-    telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+    @Override
+    public void initialize() {
+        telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 //        LoggingUtil.enableCommandLogging();
 
-    driver = new GamepadEx(gamepad1);
-    operator = new GamepadEx(gamepad2);
-      MecanumDriveSubsystem mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap);
-    telemetryUpdateSubsystem = new TelemetryUpdateSubsystem(telemetry);
-    imuSubsystem = new ImuSubsystem(hardwareMap, telemetry);
-    voltageSubsystem = new VoltageSubsystem(hardwareMap);
-    intakeSubsystem = new IntakeSubsystem(hardwareMap);
+        driver = new GamepadEx(gamepad1);
+        operator = new GamepadEx(gamepad2);
+        MecanumDriveSubsystem mecanumDriveSubsystem = new MecanumDriveSubsystem(hardwareMap);
+        telemetryUpdateSubsystem = new TelemetryUpdateSubsystem(telemetry);
+        imuSubsystem = new ImuSubsystem(hardwareMap, telemetry);
+        voltageSubsystem = new VoltageSubsystem(hardwareMap);
+        intakeSubsystem = new IntakeSubsystem(hardwareMap);
 
-    rampDoorSubsystem = new RampDoorSubsystem(hardwareMap, telemetry);
-    shooterSubsystem = new ShooterSubsystem(hardwareMap, telemetry);
-    autoCommandFactory = new AutoCommandFactory(mecanumDriveSubsystem, imuSubsystem, telemetry, getAlliance(), voltageSubsystem, shooterSubsystem, rampDoorSubsystem);
-    MecanumDriveCommand mecanumDriveCommand = new MecanumDriveCommand(
-            mecanumDriveSubsystem,
-        () -> driver.getLeftX(),
-        () -> driver.getLeftY(),
-        () -> driver.getRightX(),
-        () -> driver.getButton(GamepadKeys.Button.LEFT_BUMPER),
-        () -> driver.getButton(GamepadKeys.Button.A),
-        telemetry
-    );
-    driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whileHeld(new MecanumDpadCommand(mecanumDriveSubsystem, () -> driver.getButton(GamepadKeys.Button.B), 1, 0, telemetry));
-    driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whileHeld(new MecanumDpadCommand(mecanumDriveSubsystem, () -> driver.getButton(GamepadKeys.Button.B), 0, -1, telemetry));
-    driver.getGamepadButton(GamepadKeys.Button.DPAD_UP).whileHeld(new MecanumDpadCommand(mecanumDriveSubsystem, () -> driver.getButton(GamepadKeys.Button.B), 0, 1, telemetry));
-    driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whileHeld(new MecanumDpadCommand(mecanumDriveSubsystem, () -> driver.getButton(GamepadKeys.Button.B), -1, 0, telemetry));
+        rampDoorSubsystem = new RampDoorSubsystem(hardwareMap, telemetry);
+        shooterSubsystem = new ShooterSubsystem(hardwareMap, telemetry);
+        autoCommandFactory = new AutoCommandFactory(mecanumDriveSubsystem, imuSubsystem, telemetry, getAlliance(), voltageSubsystem, shooterSubsystem, rampDoorSubsystem);
+        MecanumDriveCommand mecanumDriveCommand = new MecanumDriveCommand(
+                mecanumDriveSubsystem,
+                () -> driver.getLeftX(),
+                () -> driver.getLeftY(),
+                () -> driver.getRightX(),
+                () -> driver.getButton(GamepadKeys.Button.LEFT_BUMPER),
+                () -> driver.getButton(GamepadKeys.Button.A),
+                telemetry
+        );
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_RIGHT).whileHeld(new MecanumDpadCommand(mecanumDriveSubsystem, () -> driver.getButton(GamepadKeys.Button.B), 1, 0, telemetry));
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_DOWN).whileHeld(new MecanumDpadCommand(mecanumDriveSubsystem, () -> driver.getButton(GamepadKeys.Button.B), 0, -1, telemetry));
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_UP).whileHeld(new MecanumDpadCommand(mecanumDriveSubsystem, () -> driver.getButton(GamepadKeys.Button.B), 0, 1, telemetry));
+        driver.getGamepadButton(GamepadKeys.Button.DPAD_LEFT).whileHeld(new MecanumDpadCommand(mecanumDriveSubsystem, () -> driver.getButton(GamepadKeys.Button.B), -1, 0, telemetry));
 
-    mecanumDriveSubsystem.setDefaultCommand(mecanumDriveCommand);
-    operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whileHeld(new IntakeCommand(intakeSubsystem));
-    operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whileHeld(new OuttakeCommand(intakeSubsystem));
-    operator.getGamepadButton(GamepadKeys.Button.A).whenPressed(new RampDoorOpenCommand(rampDoorSubsystem, telemetry));
-    operator.getGamepadButton(GamepadKeys.Button.B).whenPressed(new RampDoorCloseCommand(rampDoorSubsystem, telemetry));
-    operator.getGamepadButton(GamepadKeys.Button.Y).whileHeld(autoCommandFactory.shootPollen());
-    register(telemetryUpdateSubsystem, voltageSubsystem, rampDoorSubsystem);
-  }
+        mecanumDriveSubsystem.setDefaultCommand(mecanumDriveCommand);
+        operator.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER).whileHeld(new IntakeCommand(intakeSubsystem));
+        operator.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER).whileHeld(new OuttakeCommand(intakeSubsystem));
+        operator.getGamepadButton(GamepadKeys.Button.A).whenPressed(new RampDoorOpenCommand(rampDoorSubsystem, telemetry));
+        operator.getGamepadButton(GamepadKeys.Button.B).whenPressed(new RampDoorCloseCommand(rampDoorSubsystem, telemetry));
+        operator.getGamepadButton(GamepadKeys.Button.Y).whileHeld(autoCommandFactory.shootPollen());
+        register(telemetryUpdateSubsystem, voltageSubsystem, rampDoorSubsystem, shooterSubsystem);
+    }
 
-  public abstract Alliance getAlliance();
+    public abstract Alliance getAlliance();
 }
