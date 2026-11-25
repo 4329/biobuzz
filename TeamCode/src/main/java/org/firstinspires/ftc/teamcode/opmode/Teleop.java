@@ -7,6 +7,7 @@ import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.command.AutoCommandFactory;
+import org.firstinspires.ftc.teamcode.command.BackoutComand;
 import org.firstinspires.ftc.teamcode.command.IntakeCommand;
 import org.firstinspires.ftc.teamcode.command.MecanumDpadCommand;
 import org.firstinspires.ftc.teamcode.command.MecanumDriveCommand;
@@ -70,6 +71,7 @@ public abstract class Teleop extends CommandOpMode {
         operator.getGamepadButton(GamepadKeys.Button.A).whenPressed(new RampDoorOpenCommand(rampDoorSubsystem, telemetry));
         operator.getGamepadButton(GamepadKeys.Button.B).whenPressed(new RampDoorCloseCommand(rampDoorSubsystem, telemetry));
         operator.getGamepadButton(GamepadKeys.Button.Y).whileHeld(autoCommandFactory.shootPollen());
+        operator.getGamepadButton(GamepadKeys.Button.X).whenPressed(new BackoutComand(shooterSubsystem));
         register(telemetryUpdateSubsystem, voltageSubsystem, rampDoorSubsystem, shooterSubsystem);
     }
 

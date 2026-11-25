@@ -13,64 +13,72 @@ import org.firstinspires.ftc.teamcode.util.MathUtil;
 
 @Config
 public class ShooterSubsystem extends SubsystemBase {
-  private final MotorEx fireThePollen;
-  private final Telemetry telemetry;
-  private SimpleMotorFeedforward feedForward;
-  private PIDController sPID;
+    private final MotorEx fireThePollen;
+    private final Telemetry telemetry;
+    private SimpleMotorFeedforward feedForward;
+    private PIDController sPID;
 
-  public static Double N_FEET_FORWARD_S = 0.012;
-  public static Double N_FEET_FORWARD_V = 0.0003;
-  public static Double N_P = 0.004;
-  public static Double N_I = 0.0;
-  public static Double N_D = 0.0;
-  public static Double SETPOINT = 1220.0;
+    public static Double N_FEET_FORWARD_S = 0.012;
+    public static Double N_FEET_FORWARD_V = 0.0003;
+    public static Double N_P = 0.004;
+    public static Double N_I = 0.0;
+    public static Double N_D = 0.0;
+    public static Double SETPOINT = 1220.0;
+    public static Double Reverse_speed = -.3;
+    private boolean running = false;
+    private boolean reverse = false;
 
-  private boolean running = false;
+    public ShooterSubsystem(HardwareMap hm, Telemetry telemetry) {
+        fireThePollen = new MotorEx(hm, "pshooter");
+        this.telemetry = telemetry;
+        feedForward = new SimpleMotorFeedforward(N_FEET_FORWARD_S, N_FEET_FORWARD_V);
+        sPID = new PIDController(N_P, N_I, N_D);
+        sPID.setSetPoint(SETPOINT);
 
-  public ShooterSubsystem(HardwareMap hm, Telemetry telemetry) {
-    fireThePollen = new MotorEx(hm, "pshooter");
-    this.telemetry = telemetry;
-    feedForward = new SimpleMotorFeedforward(N_FEET_FORWARD_S, N_FEET_FORWARD_V);
-    sPID = new PIDController(N_P, N_I, N_D);
-    sPID.setSetPoint(SETPOINT);
-
-    fireThePollen.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
-    fireThePollen.setRunMode(Motor.RunMode.RawPower);
-  }
-
-  public void stop() {
-    running = false;
-    fireThePollen.stopMotor();
-  }
-
-  public void shoot() {
-    running = true;
-    sPID.setPID(N_P, N_I, N_D);
-    sPID.setSetPoint(SETPOINT);
-    feedForward = new SimpleMotorFeedforward(N_FEET_FORWARD_S, N_FEET_FORWARD_V);
-  }
-
-  @Override
-  public void periodic() {
-    if (running) {
-      double currentVelocity = fireThePollen.getCorrectedVelocity();
-      double ffOutput = feedForward.calculate(Math.max(currentVelocity, 0.01), fireThePollen.getAcceleration());
-      double pidOutput = sPID.calculate(currentVelocity);
-      double clamped = MathUtil.clamp(ffOutput + pidOutput, -1, 1);
-
-      fireThePollen.set(clamped);
-
-      telemetry.addData("clamped", clamped);
-      telemetry.addData("velocity", currentVelocity);
-      telemetry.addData("setpoints", sPID.getSetPoint());
-      telemetry.addData("ffoutput", ffOutput);
-      telemetry.addData("running", true);
-    } else {
-      telemetry.addData("running", false);
-      telemetry.addData("clamped", 0);
-      telemetry.addData("velocity", 0);
-      telemetry.addData("setpoints", sPID.getSetPoint());
-      telemetry.addData("ffoutput", 0);
+        fireThePollen.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+        fireThePollen.setRunMode(Motor.RunMode.RawPower);
     }
-  }
+
+    public void stop() {
+        running = false;
+        reverse = false;
+        fireThePollen.stopMotor();
+    }
+
+    public void shoot() {
+        running = true;
+        sPID.setPID(N_P, N_I, N_D);
+        sPID.setSetPoint(SETPOINT);
+        feedForward = new SimpleMotorFeedforward(N_FEET_FORWARD_S, N_FEET_FORWARD_V);
+    }
+
+    public void backout() {
+        reverse = true;
+    }
+
+    @Override
+    public void periodic() {
+        if (running) {
+            double currentVelocity = fireThePollen.getCorrectedVelocity();
+            double ffOutput = feedForward.calculate(Math.max(currentVelocity, 0.01), fireThePollen.getAcceleration());
+            double pidOutput = sPID.calculate(currentVelocity);
+            double clamped = MathUtil.clamp(ffOutput + pidOutput, -1, 1);
+
+            fireThePollen.set(clamped);
+
+            telemetry.addData("clamped", clamped);
+            telemetry.addData("velocity", currentVelocity);
+            telemetry.addData("setpoints", sPID.getSetPoint());
+            telemetry.addData("ffoutput", ffOutput);
+            telemetry.addData("running", true);
+        } else if (reverse) {
+            fireThePollen.set(Reverse_speed);
+        } else {
+            telemetry.addData("running", false);
+            telemetry.addData("clamped", 0);
+            telemetry.addData("velocity", 0);
+            telemetry.addData("setpoints", sPID.getSetPoint());
+            telemetry.addData("ffoutput", 0);
+        }
+    }
 }
