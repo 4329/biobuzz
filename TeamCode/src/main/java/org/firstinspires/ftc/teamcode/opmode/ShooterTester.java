@@ -8,10 +8,11 @@ import com.seattlesolvers.solverslib.gamepad.GamepadEx;
 import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 
 import org.firstinspires.ftc.teamcode.command.ShooterCommand;
-import org.firstinspires.ftc.teamcode.subsystem.BulkCacheSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.TelemetryUpdateSubsystem;
 import org.psilynx.psikit.core.Logger;
+import org.psilynx.psikit.ftc.FtcLoggingSession;
+import org.psilynx.psikit.ftc.autolog.PsiKitAutoLogSettings;
 
 @Utility(name = "ST teste")
 public class ShooterTester extends CommandOpMode {
@@ -19,10 +20,14 @@ public class ShooterTester extends CommandOpMode {
   private GamepadEx operator;
   private ShooterSubsystem shooterSubsystem;
   private ShooterCommand shooterCommand;
+  private final FtcLoggingSession psiKitSession = new FtcLoggingSession();
 
 
   @Override
   public void initialize() {
+    PsiKitAutoLogSettings.enabledByDefault = true;
+    psiKitSession.start(this, 5000);
+
     telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     shooterSubsystem = new ShooterSubsystem(hardwareMap, telemetry);
     shooterCommand = new ShooterCommand(shooterSubsystem);
@@ -31,28 +36,36 @@ public class ShooterTester extends CommandOpMode {
     operator = new GamepadEx(gamepad2);
     operator.getGamepadButton(GamepadKeys.Button.A).whileHeld(shooterCommand);
 
-    Logger.start();
-
-
-    register(new BulkCacheSubsystem(hardwareMap), telemetryUpdateSubsystem);
+    register(telemetryUpdateSubsystem, shooterSubsystem);
   }
 
   @Override
   public void run() {
-    long beforeStart = System.nanoTime() / 1000L;
+    double beforeStart = Logger.getRealTimestamp();
     Logger.periodicBeforeUser();
-    long periodicBeforeLength = (System.nanoTime() / 1000L) - beforeStart;
+    psiKitSession.logOncePerLoop(this);
 
-    long userStart = System.nanoTime() / 1000L;
+    double beforeUserEnd = Logger.getRealTimestamp();
+
     super.run();
-    long userCodeLength = (System.nanoTime() / 1000L) - userStart;
 
-    Logger.periodicAfterUser(userCodeLength, periodicBeforeLength);
+    double afterUserStart = Logger.getRealTimestamp();
+
+    Logger.periodicAfterUser(afterUserStart - beforeUserEnd, beforeUserEnd - beforeStart);
+  }
+
+  @Override
+  public void reset() {
+    try {
+      super.reset();
+    } finally {
+      psiKitSession.end();
+    }
   }
 
   @Override
   public void end() {
     super.end();
-    Logger.end();
+    psiKitSession.end();
   }
 }
