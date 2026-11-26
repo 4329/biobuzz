@@ -10,6 +10,7 @@ import com.seattlesolvers.solverslib.gamepad.GamepadKeys;
 import org.firstinspires.ftc.teamcode.command.ShooterCommand;
 import org.firstinspires.ftc.teamcode.subsystem.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.TelemetryUpdateSubsystem;
+import org.firstinspires.ftc.teamcode.util.CommandLogger;
 import org.psilynx.psikit.core.Logger;
 import org.psilynx.psikit.ftc.FtcLoggingSession;
 import org.psilynx.psikit.ftc.autolog.PsiKitAutoLogSettings;
@@ -19,7 +20,6 @@ public class ShooterTester extends CommandOpMode {
   private TelemetryUpdateSubsystem telemetryUpdateSubsystem;
   private GamepadEx operator;
   private ShooterSubsystem shooterSubsystem;
-  private ShooterCommand shooterCommand;
   private final FtcLoggingSession psiKitSession = new FtcLoggingSession();
 
 
@@ -27,14 +27,14 @@ public class ShooterTester extends CommandOpMode {
   public void initialize() {
     PsiKitAutoLogSettings.enabledByDefault = true;
     psiKitSession.start(this, 5000);
+    CommandLogger.init();
 
     telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     shooterSubsystem = new ShooterSubsystem(hardwareMap, telemetry);
-    shooterCommand = new ShooterCommand(shooterSubsystem);
     telemetryUpdateSubsystem = new TelemetryUpdateSubsystem(telemetry);
 
     operator = new GamepadEx(gamepad2);
-    operator.getGamepadButton(GamepadKeys.Button.A).whileHeld(shooterCommand);
+    operator.getGamepadButton(GamepadKeys.Button.A).whileHeld(new ShooterCommand(shooterSubsystem));
 
     register(telemetryUpdateSubsystem, shooterSubsystem);
   }

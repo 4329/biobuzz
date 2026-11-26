@@ -19,8 +19,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private PIDController sPID;
 
   public static Double N_FEET_FORWARD_S = 0.012;
-  public static Double N_FEET_FORWARD_V = 0.0003;
-  public static Double N_P = 0.004;
+  public static Double N_FEET_FORWARD_V = 0.000325;
+  public static Double N_P = 0.00001;
   public static Double N_I = 0.0;
   public static Double N_D = 0.0;
   public static Double SETPOINT = 1220.0;
@@ -40,7 +40,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   public void stop() {
     running = false;
-    fireThePollen.stopMotor();
+    fireThePollen.set(0);
   }
 
   public void shoot() {
@@ -54,7 +54,7 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     if (running) {
       double currentVelocity = fireThePollen.getCorrectedVelocity();
-      double ffOutput = feedForward.calculate(Math.max(currentVelocity, 0.01), fireThePollen.getAcceleration());
+      double ffOutput = feedForward.calculate(SETPOINT, fireThePollen.getAcceleration());
       double pidOutput = sPID.calculate(currentVelocity);
       double clamped = MathUtil.clamp(ffOutput + pidOutput, -1, 1);
 
