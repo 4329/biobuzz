@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.command.ShooterCommand;
 import org.firstinspires.ftc.teamcode.subsystem.ShooterSubsystem;
 import org.firstinspires.ftc.teamcode.subsystem.TelemetryUpdateSubsystem;
 import org.firstinspires.ftc.teamcode.util.CommandLogger;
+import org.firstinspires.ftc.teamcode.util.TelemetryLogger;
 import org.psilynx.psikit.core.Logger;
 import org.psilynx.psikit.ftc.FtcLoggingSession;
 import org.psilynx.psikit.ftc.autolog.PsiKitAutoLogSettings;
@@ -29,7 +30,7 @@ public class ShooterTester extends CommandOpMode {
     psiKitSession.start(this, 5000);
     CommandLogger.init();
 
-    telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+    telemetry = new MultipleTelemetry(telemetry, new TelemetryLogger(), FtcDashboard.getInstance().getTelemetry());
     shooterSubsystem = new ShooterSubsystem(hardwareMap, telemetry);
     telemetryUpdateSubsystem = new TelemetryUpdateSubsystem(telemetry);
 
