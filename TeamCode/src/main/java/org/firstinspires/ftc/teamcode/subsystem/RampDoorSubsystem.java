@@ -22,11 +22,13 @@ public class RampDoorSubsystem extends SubsystemBase {
 
   public void open() {
     kingBobvexethe5thsShooterDoor.setPosition(DOOROPEN);
-    telemetry.addData("Opena", DOOROPEN);
+    telemetry.addData("door_position", "open");
+    telemetry.addData("door_value", DOOROPEN);
   }
 
   public void closed() {
     kingBobvexethe5thsShooterDoor.setPosition(DOORCLOSED);
-    telemetry.addData("Closa", DOORCLOSED);
+    telemetry.addData("door_position", "close");
+    telemetry.addData("door_value", DOORCLOSED);
   }
 }

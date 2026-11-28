@@ -17,15 +17,4 @@ do
      adb pull "${file}"
    fi
 
-#    echo "wow - look at this log: ${log}"
-#    if [ -e ./${log} ]
-#    then
-#      echo "no thanks, I've already got one"
-#    else
-#      adb pull "${dir}/${log}"
-#      if [ $? -eq 0 ]
-#      then
-#         echo "yay - I snagged ${log}"
-#      fi
-#    fi
 done
